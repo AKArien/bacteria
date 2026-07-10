@@ -29,6 +29,25 @@ class BacteriaService(bacteria_pb2_grpc.BacteriaServiceServicer):
 			],
 		)
 
+	def ChangeState(self, request, context):
+		try:
+			new_state = {
+				bacteria_pb2.BacteriaInfo.STABLE: State.STABLE,
+				bacteria_pb2.BacteriaInfo.GROWING: State.GROWING,
+				bacteria_pb2.BacteriaInfo.SHRINKING: State.SHRINKING,
+				bacteria_pb2.BacteriaInfo.DEAD: State.DEAD,
+			}[request.new_state]
+
+			self.bacteria.change_state(new_state)
+
+			return self.GetInfo(None, context)
+
+		except ValueError as e:
+			context.abort(
+				grpc.StatusCode.INVALID_ARGUMENT,
+				str(e)
+			)
+
 server = grpc.server(futures.ThreadPoolExecutor(max_workers=4))
 
 bacteria_pb2_grpc.add_BacteriaServiceServicer_to_server(
