@@ -1,0 +1,25 @@
+message BacteriaRequest {}
+
+message BacteriaInfo {
+	float volume = 1;
+
+	enum State {
+		STABLE = 0;
+		GROWING = 1;
+		SHRINKING = 2;
+		DEAD = 3;
+	}
+
+	State current_state = 2;
+
+	repeated State can_switch_to = 3;
+}
+
+message ChangeStateRequest {
+    BacteriaInfo.State new_state = 1;
+}
+
+service BacteriaService {
+    rpc GetInfo(BacteriaRequest) returns (BacteriaInfo);
+    rpc ChangeState(ChangeStateRequest) returns (BacteriaInfo);
+}
