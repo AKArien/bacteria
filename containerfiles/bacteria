@@ -1,0 +1,19 @@
+from namely/protoc:latest as protobuild
+
+copy proto/ /proto
+
+workdir /proto
+
+run protoc --proto_path=. --python_out=. bacteria.proto
+
+from python:3.14
+
+copy bacteria/ /bacteria
+
+workdir /bacteria
+
+copy --from=protobuild /proto/bacteria_pb2.py bacteria_pb2.py
+
+run pip install -r requirements.txt
+
+cmd ["python", "server.py"]
