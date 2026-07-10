@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bacteria</title>
+</head>
+
+<body>
+
+<h1>Bacteria information</h1>
+
+<div>
+    Volume:
+    <span id="volume"></span>
+</div>
+
+<div>
+    State:
+    <span id="state"></span>
+</div>
+
+<h2>Change state</h2>
+
+<select id="stateSelect">
+</select>
+
+<button onclick="changeState()">
+    Change
+</button>
+
+
+<script>
+
+async function refresh() {
+    const response = await fetch("/api/info");
+    const data = await response.json();
+
+    document.getElementById("volume").textContent =
+        data.volume;
+
+    document.getElementById("state").textContent =
+        data.state;
+
+
+    const select =
+        document.getElementById("stateSelect");
+
+    select.innerHTML = "";
+
+    for (const state of data.can_switch_to) {
+        const option = document.createElement("option");
+
+        option.value = state;
+        option.textContent = state;
+
+        select.appendChild(option);
+    }
+}
+
+
+async function changeState() {
+    const state =
+        document.getElementById("stateSelect").value;
+
+    await fetch("/api/change_state", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            state: state
+        })
+    });
+
+    refresh();
+}
+
+
+refresh();
+
+</script>
+
+</body>
+</html>

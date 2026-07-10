@@ -1,0 +1,12 @@
+from python:3.14
+
+copy web /web
+copy proto/bacteria.proto /bacteria/bacteria.proto
+
+workdir /web
+
+run pip install -r requirements.txt
+
+run python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. bacteria.proto
+
+cmd ["python", "server.py"]
