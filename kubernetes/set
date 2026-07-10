@@ -19,7 +19,7 @@ spec:
       containers:
       - name: bacteria
         image: bacteria
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Never
 
 
         ports:
