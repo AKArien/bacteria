@@ -1,19 +1,12 @@
-from namely/protoc:latest as protobuild
-
-copy proto/ /proto
-
-workdir /proto
-
-run protoc --proto_path=. --python_out=. bacteria.proto
-
 from python:3.14
 
 copy bacteria/ /bacteria
+copy proto/bacteria.proto /bacteria/bacteria.proto
 
 workdir /bacteria
 
-copy --from=protobuild /proto/bacteria_pb2.py bacteria_pb2.py
-
 run pip install -r requirements.txt
 
-cmd ["python", "server.py"]
+run python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. bacteria.proto
+
+cmd ["python", "rpc.py"]
