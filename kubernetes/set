@@ -18,7 +18,9 @@ spec:
     spec:
       containers:
       - name: bacteria
-        image: myregistry/bacteria-service:v1
+        image: bacteria
+        imagePullPolicy: IfNotPresent
+
 
         ports:
         - containerPort: 50051
